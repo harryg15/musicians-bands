@@ -50,7 +50,7 @@ describe('Band and Musician Models', () => {
         await testing.addMusician(1)
         const getResults = await testing.getMusicians()
     
-    expect(getResults[0].dataValues.name).toEqual("Chris Martin")
+        expect(getResults[0].dataValues.name).toEqual("Chris Martin")
 
     })
 
