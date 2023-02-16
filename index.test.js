@@ -36,7 +36,7 @@ describe('Band and Musician Models', () => {
     test('can create a Musician', async () => {
         // TODO - test creating a musician
 
-        await Musician.create({ name: "Chris Martin", instrument: "Piano", UserID: 1})
+        await Musician.create({ name: "Chris Martin", instrument: "Piano"})
 
         const foundMusician = await Musician.findAll()
 
@@ -44,10 +44,7 @@ describe('Band and Musician Models', () => {
         expect(foundMusician[0].instrument).toBe("Piano");
     })
 
-    test('Test association with Band & Musician', async () => {
-        
-        Musician.belongsTo(Band);
-        Band.hasMany(Musician);
+    test('Association with Band & Musician', async () => {
 
         const testing = await Band.findByPk(1)
         await testing.addMusician(1)
@@ -57,20 +54,33 @@ describe('Band and Musician Models', () => {
 
     })
 
-    test('Test association with Band & Song', async () => {
+    test('Association with Band & Song', async () => {
         
         await Song.bulkCreate([{ title: "Fix You", Year: 2005 },
         {title: "Adventure of a Lifetime", Year: 2015}])
 
-        const testing = await Band.findByPk(1)
-        await testing.addSongs(1)
-        await testing.addSongs(2)
-        const getResults = await testing.getSongs()
-        console.log(getResults)
+        const bandTesting = await Band.findByPk(1)
+
+        await bandTesting.addSongs(1)
+        await bandTesting.addSongs(2)
+
+        const getSongs = await bandTesting.getSongs()
     
-    expect(getResults.length).toEqual(2)
+        expect(getSongs.length).toEqual(2)
 
     })
+
+    test('Eager loading (joining tables)', async () => {
+        
+        const getAllBands = await Band.findAll({
+            include: [
+                { model: Song }
+            ]
+        })
+
+        expect(getAllBands[0].songs[0].title).toEqual("Fix You")
+    })
+
 
     test('can update a Musician', async () => {
         // TODO - test creating a musician
