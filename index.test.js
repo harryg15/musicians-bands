@@ -35,12 +35,26 @@ describe('Band and Musician Models', () => {
     test('can create a Musician', async () => {
         // TODO - test creating a musician
 
-        await Musician.create({ name: "Chris Martin", instrument: "Piano"})
+        await Musician.create({ name: "Chris Martin", instrument: "Piano", UserID: 1})
 
         const foundMusician = await Musician.findAll()
 
         expect(foundMusician[0].name).toBe("Chris Martin");
         expect(foundMusician[0].instrument).toBe("Piano");
+    })
+
+    test('Test association with Band & Musician', async () => {
+        
+        Musician.belongsTo(Band);
+        Band.hasMany(Musician);
+
+        const testing = await Band.findByPk(1)
+        await testing.addMusician(1)
+        const getResults = await testing.getMusicians()
+        console.log(getResults)
+    
+    expect(getResults[0].dataValues.name).toEqual("Chris Martin")
+
     })
 
     test('can update a Musician', async () => {
