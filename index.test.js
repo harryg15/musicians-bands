@@ -1,5 +1,6 @@
 const {sequelizeCon} = require('./db');
-const {Band, Musician} = require('./index')
+const {Band, Musician} = require('./index');
+const { Song } = require('./Song');
 
 describe('Band and Musician Models', () => {
     /**
@@ -51,9 +52,23 @@ describe('Band and Musician Models', () => {
         const testing = await Band.findByPk(1)
         await testing.addMusician(1)
         const getResults = await testing.getMusicians()
-        console.log(getResults)
     
     expect(getResults[0].dataValues.name).toEqual("Chris Martin")
+
+    })
+
+    test('Test association with Band & Song', async () => {
+        
+        await Song.bulkCreate([{ title: "Fix You", Year: 2005 },
+        {title: "Adventure of a Lifetime", Year: 2015}])
+
+        const testing = await Band.findByPk(1)
+        await testing.addSongs(1)
+        await testing.addSongs(2)
+        const getResults = await testing.getSongs()
+        console.log(getResults)
+    
+    expect(getResults.length).toEqual(2)
 
     })
 
